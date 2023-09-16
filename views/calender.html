@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8' />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js'></script>
+
+
+    </script>
+    <style>
+        #week,
+        #weekend {
+            padding: 0px;
+
+        }
+
+        .setdate {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .custom-events {
+            background-color: rgb(87, 223, 223);
+            color: red;
+
+
+            /* Add other styling rules as needed */
+        }
+
+        .fc-event-title {
+            color: red;
+        }
+
+        .months {
+            display: flex;
+        }
+
+        input[type=number],
+        input[type=text] {
+            height: 30px;
+            width: 8rem
+        }
+
+        .months {
+            margin-top: 2rem;
+
+        }
+
+        .years {
+            display: none;
+            margin-bottom: 2rem;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    {{.cal}}
+    <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal"
+        class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        type="button">
+        Add Event
+    </button>
+    <div id='calendar'></div>
+    <!-- Modal toggle -->
+
+
+    <!-- Main modal -->
+    <div id="authentication-modal" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <button type="button"
+                    class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="authentication-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <div class="px-6 py-6 lg:px-8">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
+                    <form class="space-y-6" action="/" method="post">
+                        <div>
+                            <label for="email"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                            <input type="text" name="title" id="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                placeholder="name@company.com" required>
+                        </div>
+                        <div class="setdate">
+                            <div>
+                                <label for="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select start
+                                    date</label>
+                                <input type="date" name="start_date" id="password" placeholder="start_date"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                    required>
+                            </div>
+                            <div>
+                                <label for="password1"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">select end
+                                    date</label>
+                                <input type="date" name="end_date" id="password1" placeholder="end_date"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                    required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="default"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Repeat</label>
+                            <select id="optionSelect" name="mySelectName"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected>Choose </option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div id="daily"></div>
+                        <!-- <div id="daily"></div> -->
+                        <div id="weekly"></div>
+                        <div id="monthly"></div>
+                        <div id="yearly">
+                            <div class="years">
+                                <input type="radio" name="selectcase[0]">
+                                Every <input type="number" name="daily[0]">of
+                                <select name="mySelect[0]">
+                                    <option value="">choose</option>
+
+                                    <option value="0">January</option>
+                                    <option value="1">Febuary</option>
+                                    <option value="2">march</option>
+                                    <option value="3">April</option>
+                                    <option value="4">May</option>
+                                    <option value="5">June</option>
+                                    <option value="6">july</option>
+                                    <option value="7">August</option>
+                                    <option value="8">September</option>
+                                    <option value="9">October</option>
+                                    <option value="10">November</option>
+                                    <option value="11">December</option>
+                                </select>
+
+                            </div>
+                            <div class="years">
+                                <input type="radio" name="selectcase[1]">
+                                Every<select name="daily[1]">
+
+
+                                    <option value="1">Monday</option>
+                                    <option value="2">Tuesday</option>
+                                    <option value="3">Wednesday</option>
+                                    <option value="4">Thrusday</option>
+                                    <option value="5">Friday</option>
+                                    <option value="6">Saturday</option>
+                                    <option value="0">Sunday</option>
+
+                                </select>of
+                                <select name="mySelect[1]">
+                                    <option>choose</option>
+                                    <option value="0">January</option>
+                                    <option value="1">Febuary</option>
+                                    <option value="2">march</option>
+                                    <option value="3">April</option>
+                                    <option value="4">May</option>
+                                    <option value="5">June</option>
+                                    <option value="6">july</option>
+                                    <option value="7">August</option>
+                                    <option value="8">September</option>
+                                    <option value="9">October</option>
+                                    <option value="10">November</option>
+                                    <option value="11">December</option>
+                                </select>
+
+                            </div>
+
+                        </div>
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{$lastValue:=""}}
+    {{$day:=""}}
+    {{$endValue:=""}}
+    {{$occurence:=""}}
+    {{$title:=""}}
+    {{$mode:=""}}
+    {{$case:=""}}
+    {{$week:=""}}
+    {{range $index, $value := .Calender}}
+
+    {{$lastValue = $value.Start_date}}
+    {{$endValue = $value.End_date}}
+    {{$occurence = $value.Occurence}}
+    {{$title = $value.Title}}
+    {{$mode = $value.Mode}}
+    {{$day = $value.Day}}
+    {{$case = $value.Case}}
+    {{$week = $value.Week}}
+
+    {{end}}
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var calendarEl = document.getElementById('calendar');
+            // Replace with your calendar element
+            var event = "{{.cal}}";
+            console.log(event)
+
+
+
+            var last = "{{$lastValue}}"
+            var end = "{{$endValue}}"
+            var gap = parseInt("{{$occurence}}")
+            var mode = "{{$mode}}"
+            var cases = "{{$case}}"
+            var week = "{{$week}}"
+            var day = parseInt("{{$day}}")
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                // ... other calendar options ...
+                // plugins: ['dayGrid'],
+                // plugins: ['dayGrid'],
+
+                events: function (info, successCallback, failureCallback, getDaily, getWeekly, getMonthly, getYearly) {
+                    $.ajax({
+                url: '/', // Replace with your API endpoint URL
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Assuming your API response is an array of event objects
+                    successCallback("{{.cal}}"); // Pass the array of event objects to the successCallback.
+                },
+                error: function (error) {
+                    failureCallback(error);
+                }
+            });
+                }
+            })
+
+                    // getDaily()
+                    // getWeekly()
+                    // getMonthly()
+                    // getYearly()
+                    // function getDaily() {
+                    //     if (mode == "daily") {
+
+
+                    //         var startDate = new Date(last); // Replace with your start date
+                    //         var endDate = new Date(end);   // Replace with your end date
+
+                    //         var events = [];
+
+                    //         var currentDate = new Date(startDate);
+
+                    //         while (currentDate <= endDate) {
+                    //             var eventEndDate = new Date(currentDate);
+
+                    //             eventEndDate.setDate(eventEndDate.getDate());
+                    //             console.log(eventEndDate)// Event ends 1 day after start
+                    //             events.push({
+                    //                 title: '{{$title}}',
+                    //                 start: currentDate.toISOString().slice(0, 10), // Format as 'YYYY-MM-DD'
+                    //                 end: eventEndDate.toISOString().slice(0, 10)
+                    //             });
+
+                    //             currentDate.setDate(currentDate.getDate() + (gap)); // Add a 3-day gap for the next event
+                    //         }
+
+                    //         successCallback(events);
+                    //     }
+                    // }
+
+                //     function getWeekly() {
+                //         if (mode == "weekly") {
+
+                //             var count = 0;
+                //             result = -1
+                //             var final = 0;
+                //             var events = [];
+                //             var startDate = new Date(last); // Replace with your start date
+                //             var endDate = new Date(end);   // Replace with your end date                      
+                //             while (startDate < endDate) {
+                //                 if (startDate.getDay() != day && final == 0 && startDate.getDay() > day) {
+                //                     final = 1;
+                //                     count++;
+                //                 }
+
+                //                 if (startDate.getDay() == day) {
+                //                     if (final == 0) {
+
+                //                         final = 1;
+                //                         events.push({
+                //                             title: '{{$title}}',
+                //                             start: startDate.toISOString().slice(0, 10), // Format as 'YYYY-MM-DD'
+                //                         });
+                //                         count = -1;
+
+                //                     }
+                //                     count++;
+                //                     result++;
+
+                //                     if ((count == gap)) {
+
+                //                         events.push({
+                //                             title: '{{$title}}',
+                //                             start: startDate.toISOString().slice(0, 10), // Format as 'YYYY-MM-DD'
+                //                         });
+                //                         count = 0;
+                //                         result = 0;
+                //                     }
+
+                //                 }
+                //                 startDate.setDate(startDate.getDate() + 1);
+                //             }
+                //             successCallback(events);
+
+                //         }
+                //     }
+
+
+                //     function getMonthly() {
+                //         if (mode == "monthly" && cases == "1") {
+                //             var count = 0;
+                //             var check = 0;
+                //             var firstTime = 0;
+                //             var events = [];
+                //             var startDate = new Date(last);
+                //             var endDate = new Date(end);
+                //             while (startDate < endDate) {
+
+                //                 if (startDate.getDate() == day) {
+
+                //                     console.log(day + "===" + startDate.getDate());
+
+                //                     firstTime = 1;
+                //                     events.push({
+                //                         title: '{{$title}}',
+                //                         start: startDate.toISOString().slice(0, 10), // Format as 'YYYY-MM-DD'
+                //                     });
+                //                     console.log(startDate.getMonth())
+                //                     startDate.setMonth(startDate.getMonth() + (gap - 1));
+                //                 }
+                //                 startDate.setDate(startDate.getDate() + 1);
+                //             }
+
+                //             successCallback(events);
+
+                //         }
+                //         else if (mode == "monthly" && cases == "2") {
+                //             events = [];
+                //             var check = false;;
+                //             var lastdate;
+                //             var startDate = new Date(last);
+                //             var endDate = new Date(end);
+                //             var lastdayofmonth;
+                //             var count = 0;
+                //             var addweek;
+                //             var newdate;
+                //             var i = 0;
+                //             var getweekdate = [];
+                //             var checkweek;
+                //             var final=0;
+
+                //             var getfirstdate = new Date(startDate.getFullYear(), startDate.getMonth(), 0).getDate()
+
+                //             var getweek = new Date(startDate.getFullYear(), startDate.getMonth(), 1)
+                //             checkweek = Math.ceil((startDate.getDate()) / 7);
+                //             console.log(getweek + "alo")
+                //             for (i = 0; i < getfirstdate; i++) {
+                //                 // if(getweek.getDay() !=day &&final==0 &&getweek.getDay()){
+                //                 //     final=1;
+                //                 //     getweekdate.push("")
+                //                 // }
+                //                 if (getweek.getDay() == day) {
+                //                     console.log(getweek + "getday\nhello")
+                //                     var newdate = new Date(getweek)
+                //                     newdate.setDate(newdate.getDate() + 1)
+                //                     getweekdate.push(newdate.toISOString().slice(0, 10))
+
+                //                 }
+                //                 getweek.setDate(getweek.getDate() + 1)
+                //             }
+                //             while (startDate <= endDate) {
+
+                //                 lastdayofmonth = new Date(startDate.getFullYear(), (startDate.getMonth() + 1), 0).getDate()
+
+
+                //                 while (startDate.getDate() < lastdayofmonth && startDate <= endDate) {
+                //                     if (startDate.getDay() == day) {
+                //                         count++;
+                //                         if (count == 1) {
+                //                             newdate = new Date(startDate)
+                //                             console.log(week + "==" + checkweek)
+                //                             for (var j = 0; j <= 4; j++) {
+                //                                 console.log(getweekdate)
+                //                                 if (j == week) {
+
+                //                                     console.log(startDate + "getdatelatest")
+                //                                     events.push({
+                //                                         title: '{{$title}}',
+
+                //                                         start: getweekdate[j],
+                //                                     });
+                //                                 }
+                //                             }
+
+                //                         }
+                //                         else {
+
+                //                             startDate.setDate(startDate.getDate() + 1);
+                //                             var firstdate = new Date(startDate.getFullYear(), (startDate.getMonth()), 1);
+                //                             var first = new Date(startDate.getFullYear(), (startDate.getMonth()), 0);
+                //                             console.log(firstdate + "first")
+                //                             if (week == 0 || week == 1 || week == 2 || week == 3 || week == 4) {
+                //                                 if (firstdate.getDay() > day) {
+                //                                     var newdate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
+                //                                     newdate.setDate(newdate.getDate() + (7 * Math.abs((week - 1))))
+
+                //                                     events.push({
+                //                                         title: '{{$title}}',
+
+                //                                         start: newdate.toISOString().slice(0, 10),
+                //                                     });
+                //                                 }
+                //                                 if (firstdate.getDay() <= day) {
+
+                //                                     var newdate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
+                //                                     console.log(newdate + "getDate")
+
+                //                                     newdate.setDate(newdate.getDate() + (7 * (week)))
+
+                //                                     events.push({
+                //                                         title: '{{$title}}',
+
+                //                                         start: newdate.toISOString().slice(0, 10),
+                //                                     });
+                //                                 }
+
+                //                             }
+                //                         }
+                //                         startDate = new Date(startDate.getFullYear(), startDate.getMonth() + gap, 0)
+
+                //                         lastdayofmonth = new Date(startDate.getFullYear(), (startDate.getMonth() + gap), 0).getDate()
+                //                     }
+
+                //                     startDate.setDate(startDate.getDate() + 1);
+
+                //                 }
+                //                 startDate.setFullYear(startDate.getFullYear() + 1);
+                //             }
+                //             successCallback(events);
+                //         }
+                //     }
+
+
+                //     function getYearly() {
+                //         if (mode == "yearly" && cases == "1") {
+                //             var events = [];
+                //             var startDate = new Date(last);
+                //             // var date = new Date(last);
+                //             var endDate = new Date(end);
+                //             while (startDate.getFullYear() <= endDate.getFullYear()) {
+
+                //                 while (startDate.getMonth() != day) {
+
+                //                     console.log(startDate.getMonth())
+                //                     startDate.setMonth(startDate.getMonth() + 1);
+                //                 }
+                //                 if (startDate.getMonth() == day) {
+                //                     var year = startDate.getFullYear()
+                //                     var month = startDate.getMonth()
+                //                     var date = new Date(year, month, gap + 1)
+                //                     startDate.setDate(startDate.getDate());
+                //                     events.push({
+                //                         title: '{{$title}}',
+                //                         start: date.toISOString().slice(0, 10), // Format as 'YYYY-MM-DD'
+                //                     });
+                //                     startDate.setYear(startDate.getFullYear() + 1, 0, 1);
+
+                //                 }
+
+                //                 successCallback(events);
+                //             }
+                //         }
+                //         else if (mode == "yearly" && cases == "2") {
+                //             var events = [];
+                //             var startDate = new Date(last);
+                //             // var date = new Date(last);
+                //             var endDate = new Date(end);
+                //             var newdate;
+                //             while (startDate.getFullYear() <= endDate.getFullYear()) {
+                //                 if (startDate.getMonth() == day || startDate.getMonth() <= day) {
+                //                     console.log(startDate.setMonth(day, 1) + "setdate to first month")
+                //                     var timestamp = startDate.setMonth(day, 1);
+                //                     startDate = new Date(timestamp);
+                //                     startDate.setDate(1);
+                //                     console.log(startDate)
+
+                //                     while (startDate.getDay() != gap) {
+
+                //                         startDate.setDate(startDate.getDate() + 1)
+
+                //                     }
+                //                     var lastdayofmonth = new Date(startDate.getFullYear(), (day+1), 0).getDate()
+
+
+                //                     var check = startDate.getDate()
+
+                //                     while (startDate.getDay() == gap && check <= lastdayofmonth  ) {
+                //                         console.log(lastdayofmonth+"lastdayofmonth")
+                //                         console.log(check+"before")
+                //                         var date = new Date(startDate.getFullYear(), day, check + 1)
+
+                //                         events.push({
+                //                             title: '{{$title}}',
+                //                             start: date.toISOString().slice(0, 10),
+                //                         });
+
+                //                         check = check + 7;
+                //                         console.log(check+"after")
+
+
+
+                //                     }
+                //                 }
+
+                //                 startDate.setFullYear(startDate.getFullYear() + 1, day, 1)
+                //             }
+
+                //             successCallback(events);
+
+                //         }
+                //     }
+
+                // }
+
+
+
+            // });
+
+
+
+            calendar.render();
+        });
+
+
+    </script>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
+
+    <script>
+
+
+
+
+        $(document).ready(function () {
+            $('#optionSelect').change(function () {
+                var selectedOption = $(this).val();
+
+                if (selectedOption === 'daily') {
+                    $('#weekly').hide()
+                    $('#monthly').hide()
+                    $('#yearly').hide()
+                    $('#daily').show()
+                    var divElement = $("<div>");
+                    var text = $("<p>")
+                    text.html("Enter Days")
+                    var input_text = $("<span>");
+                    // input_text.text("Enter Days")
+                    divElement.attr("class", "daily_01");
+                    var inputElement = $("<input name=daily[0]>");
+                    inputElement.attr("type", "number");
+                    inputElement.attr("placeholder", "Enter text...");
+
+                    divElement.append(text, input_text, inputElement);
+                    $("#daily").append(divElement);
+
+                }
+                else if (selectedOption === 'weekly') {
+                    $('#daily').hide()
+                    $('#monthly').hide()
+                    $('#yearly').hide()
+                    $('#weekly').show()
+                    var br = $("<br>")
+                    var divElement = $("<div>");
+                    var selectdiv = $("<div>");
+
+                    var input_text = $("<p>");
+                    input_text.html("Every")
+                    var text = $("<p>")
+                    text.html("Enter Week of")
+                    divElement.attr("class", "daily_01");
+                    var inputElement = $("<input name=daily[0]>");
+                    inputElement.attr("type", "number");
+                    inputElement.attr("placeholder", "Enter text...");
+                    var selectElement = $('<select>', {
+                        id: 'mySelect',         // Set an ID for the <select> element
+                        name: 'mySelect[0]'    // Set a name attribute (optional)
+                    });
+
+                    // Define an array of option values and labels
+                    var options = [
+                        { value: '1', label: 'monday 1' },
+                        { value: '2', label: 'tuesday 2' },
+                        { value: '3', label: 'wednesday 3' },
+                        { value: '4', label: 'thrusday 4' },
+                        { value: '5', label: 'Friday 5' },
+                        { value: '6', label: 'saturday 6' },
+                        { value: '0', label: 'sunday 7' },
+                    ];
+
+                    // Loop through the options and create <option> elements
+                    $.each(options, function (index, option) {
+                        selectElement.append($('<option>', {
+                            value: option.value,
+                            text: option.label
+                        }));
+                    });
+                    selectdiv.append(selectElement);
+                    divElement.append(input_text, inputElement, br, text, selectdiv);
+                    $("#weekly").append(divElement);
+
+                }
+                else if (selectedOption === 'monthly') {
+
+                    $('#weekly').hide()
+                    $('#daily').hide()
+                    $('#yearly').hide()
+                    $('#monthly').show()
+                    var createselect = $("<input type=radio name=selectcase[0]>")
+                    var createselect2 = $("<input type=radio name=selectcase[1]>")
+                    var createDiv = $("<div class=months>")
+                    var divElement = $("<div class=months>")
+                    var text = $("<p>")
+                    var text2 = $("<p>")
+                    text.html("day of every months")
+                    text2.html("of every month")
+                    var br = $("<br>")
+                    var br2 = $("<br>")
+                    var span = $("<p>")
+                    var spanweek = $("<span>")
+                    span.html("Date")
+                    spanweek.text("day of every months ")
+                    var inputElement = $("<input  name=daily[0]>");
+
+                    inputElement.attr("type", "number");
+                    inputElement.attr("placeholder", "Enter text...");
+                    var inputElement2 = $("<input type=number name=daily[1] placeholder=Enter months>");
+                    var selectElement = $('<select>', {
+                        id: 'week',         // Set an ID for the <select> element
+                        name: 'weekends'    // Set a name attribute (optional)
+                    });
+
+                    // Define an array of option values and labels
+                    var options = [
+                        { value: 0, label: '1st week ' },
+                        { value: 1, label: '2nd week ' },
+                        { value: 2, label: '3rd week ' },
+                        { value: 3, label: '4th week ' },
+                        { value: 4, label: '5th week ' },
+
+                    ];
+
+                    // Loop through the options and create <option> elements
+                    $.each(options, function (index, option) {
+                        selectElement.append($('<option>', {
+                            value: option.value,
+                            text: option.label
+                        }));
+                    });
+                    var selectElement2 = $('<select>', {
+                        id: 'weekend',         // Set an ID for the <select> element
+                        name: 'mySelect[1]'    // Set a name attribute (optional)
+                    });
+
+                    // Define an array of option values and labels
+                    var options = [
+                        { value: '1', label: 'monday ' },
+                        { value: '2', label: 'tuesday ' },
+                        { value: '3', label: 'wednesday ' },
+                        { value: '4', label: 'thrusday ' },
+                        { value: '5', label: 'Friday ' },
+                        { value: '6', label: 'saturday ' },
+                        { value: '0', label: 'sunday ' },
+                    ];
+                    $.each(options, function (index, option) {
+                        selectElement2.append($('<option>', {
+                            value: option.value,
+                            text: option.label
+                        }));
+                    });
+                    var date = $("<input type=number name=mySelect[0] placeholder=Enter day of your months>")
+
+                    createDiv.append(createselect, span, date, text, inputElement)
+                    divElement.append(createselect2, selectElement2, selectElement, text2, br2, inputElement2)
+                    $('#monthly').append(createDiv, divElement)
+                }
+                else if (selectedOption === 'yearly') {
+                    $('#weekly').hide()
+                    $('#monthly').hide()
+                    $('#daily').hide()
+                    $('#yearly').show()
+                    $('.years').show()
+
+                }
+
+
+            });
+        });
+        $('buttton').on('submit', function () {
+            console.log($(this).val)
+        })
+    </script>
+</body>
+
+</html>
